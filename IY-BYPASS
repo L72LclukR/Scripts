@@ -1,0 +1,41 @@
+--[[ // Infinite Yield bypass //
+v 0.0.0 bypass
+author / NO AUTHOR - ALRIGHT - THIS SCRIPT HAS NO AUTHOR
+]]
+local NotificationLibrary = loadstring(game:HttpGet("https://pastebin.com/raw/wiPVTwLB"))()
+local old_warn = warn
+getgenv().warn = function(msg)
+    if msg:find("Wise Native American Edition") then return end
+    old_warn(msg)
+end
+
+if hookfunction and debug and debug.getinfo then
+    local old_debug = debug.getinfo
+    hookfunction(debug.getinfo, function(func, ...)
+        local info = old_debug(func, ...)
+        if info and info.source and info.source:find("InfiniteYield") then
+            info.source = "[C]"
+        end
+        return info
+    end)
+end
+
+if hookfunction and getfenv then
+    local old_getfenv = getfenv
+    hookfunction(getfenv, function(level)
+        local env = old_getfenv(level)
+        if env and env._G then
+            env._G = {}
+        end
+        return env
+    end)
+end
+
+NotificationLibrary:SendNotification("Success", "Bypass applied, running IY..", 2)
+
+local success, err = pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end)
+if not success then
+    NotificationLibrary:SendNotification("Error", "Error:\n" .. tostring(err), 5)
+end
